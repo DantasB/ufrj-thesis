@@ -42,5 +42,5 @@ if __name__ == "__main__":
     no_error, collection = access_collection()
 
     if no_error:
-        thesis = Thesis("Um teste para um teste", ["bruno", "pedro"], ["professor1", "professor2"], "https://teste.com.br", ["teste"], "UFRJ", "POLI", "Engenharia de Computação e Informação", "pt-br", 2021)
+        thesis = Thesis(4895, "Um teste para um teste", ["bruno", "pedro"], ["professor1", "professor2"], "https://teste.com.br", ["teste"], "UFRJ", "POLI", "Engenharia de Computação e Informação", "pt-br", 2021)
         mongo_utils.insert_document_on_mongo(collection, thesis.serialize())

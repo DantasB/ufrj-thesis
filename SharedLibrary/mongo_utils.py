@@ -1,0 +1,89 @@
+import pymongo
+
+def connect_to_mongo(base_uri, user, password, database, port):
+    """ Connect to mongo using the Atlas uri
+
+    Args:
+        base_uri (str): uri to be filled with the user informations
+        user (str): user login
+        password (str): user password
+        database (str): database to connect
+        port (int): mongo cluster port
+
+    Returns:
+        MongoClient: the client to be used in the database/collection access
+    """
+    try:
+        connection_string = base_uri.format(user=user, password=password, database=database)
+        return pymongo.MongoClient(connection_string, port)
+    except:
+        return None
+
+def get_mongo_database(connection, database_name):
+    """ Access the database
+
+    Args:
+        connection (MongoClient): Mongo connection to the database
+        database_name (str): database to be accessed
+
+    Returns:
+        Database: the Database object
+    """
+    try:
+        return connection.get_database(database_name)
+    except:
+        return None
+
+def get_mongo_collection(database, collection_name):
+    """ Access the collection
+
+    Args:
+        database (Database): Database that contains the collection_name
+        collection_name (str): collection to be accessed
+
+    Returns:
+        Collection: the Collection object
+    """
+    try:
+        return database.get_collection(collection_name)
+    except:
+        return None
+
+def insert_document_on_mongo(collection, document):
+    """ Inserts a single document to the collection
+
+    Args:
+        collection (Collection): collection object to inser the document
+        document (Response): Response object to be saved on mongo
+
+    Returns:
+        bool: True if document was inserted
+    """
+    print("[Debug] Inserting document on mongo")
+    try:
+        collection.insert_one(document)
+        print("[Debug] Document inserted")
+        return True       
+    except:
+        print("[Warn] Couldn't insert the document")
+        raise
+        return False
+
+def delete_document_on_mongo(collection, query):
+    """ Deletes a single document to the collection
+
+    Args:
+        collection (Collection): collection object to inser the document
+        query (dictionary): Query used to find the object and delete it in the collection
+
+    Returns:
+        bool: True if document was deleted correctly
+    """
+    print("[Debug] Deleting document on mongo")
+    try:
+        collection.delete_one(query)
+        print("[Debug] Document deleted")
+        return True       
+    except:
+        print("[Warn] Couldn't delete the document")
+        return False

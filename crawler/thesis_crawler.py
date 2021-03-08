@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup as bs
 from datetime import datetime as dt
+from SharedLibrary.parser_utils import transform_data_to_dictionary, treat_value
 
 BASE_URL = "https://monografias.poli.ufrj.br/"
 CURSOS   = ["Engenharia Ambiental", "Engenharia Civil", "Engenharia-Básico", "Engenharia de Computação e Informação", "Engenharia de Controle e Automação", "Engenharia de Materiais", "Engenharia de Petróleo", "Engenharia de Produção", "Engenharia Eletrônica e de Computação", "Engenharia Elétrica", "Engenharia Mecânica", "Engenharia Metalúrgica", "Engenharia Naval e Oceânica", "Engenharia Nuclear"]
@@ -20,7 +21,7 @@ def get_monographs():
             response = requests.get(url)
             soup = bs(response.text, "html.parser")
             monographs += [f"{BASE_URL}{elem.get('href')}" for elem in soup.find_all("a", {"class":"linkmonografia"})]
-    
+
     return monographs
 
 def parse_pages():
@@ -40,9 +41,8 @@ def parse_pages():
             monograph_data = [elem for elem in soup.find_all("td", {"valign":"top"})]
 
             print(f'[Debug] Treating informations.')
-
             result_list.append(treat_value(transform_data_to_dictionary(monograph_data)))
         except:
-            pass
+            raise
 
     return result_list

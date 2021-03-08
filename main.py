@@ -3,6 +3,7 @@ import os
 from Classes.thesis_object import Thesis
 from crawler.thesis_crawler import parse_pages
 from SharedLibrary import mongo_utils
+from SharedLibrary import parser_utils
 from flask import jsonify
 from dotenv import load_dotenv, find_dotenv
 

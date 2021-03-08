@@ -55,7 +55,7 @@ def transform_data_to_dictionary(elements):
         dictionary: treated information.
     """
     url_informations = {}
-    for n in range(0,len(monograph_data),2):
-        url_informations[clean_names(monograph_data[n].text)] = monograph_data[n+1]
+    for n in range(0,len(elements),2):
+        url_informations[clean_names(elements[n].text)] = elements[n+1]
     
     return url_informations

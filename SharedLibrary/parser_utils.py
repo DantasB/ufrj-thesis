@@ -37,7 +37,7 @@ def treat_value(informations):
     export = {}
     for key in informations.keys():
         clean = re.compile(r",|\.|;|/(?!>)")
-        if key == "endereco":
+        if key == "ENDERECO":
             content = unidecode(informations[key].text).replace("\n","").strip()
         else:
             content = [unidecode(elem).upper().strip() for elem in re.sub(clean, "<br/>", informations[key].decode_contents()).split("<br/>")]

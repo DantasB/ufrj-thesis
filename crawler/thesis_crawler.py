@@ -1,8 +1,6 @@
 import requests
 from bs4 import BeautifulSoup as bs
 from datetime import datetime as dt
-from unidecode import unidecode
-import re
 
 BASE_URL = "https://monografias.poli.ufrj.br/"
 CURSOS   = ["Engenharia Ambiental", "Engenharia Civil", "Engenharia-Básico", "Engenharia de Computação e Informação", "Engenharia de Controle e Automação", "Engenharia de Materiais", "Engenharia de Petróleo", "Engenharia de Produção", "Engenharia Eletrônica e de Computação", "Engenharia Elétrica", "Engenharia Mecânica", "Engenharia Metalúrgica", "Engenharia Naval e Oceânica", "Engenharia Nuclear"]
@@ -36,16 +34,14 @@ def parse_pages():
     
     for url in monographs:
         try:
-            print(f'[Debug] Accessing url: {url}. ')
+            print(f'[Debug] Accessing url: {url}.')
             response = requests.get(url)
             soup = bs(response.text, "html.parser")
             monograph_data = [elem for elem in soup.find_all("td", {"valign":"top"})]
-            dic = {}
-            for n in range(0,len(monograph_data),2):
-                dic[unidecode(monograph_data[n].text).replace(":","").lower().strip()] = monograph_data[n+1]         
-            
+
             print(f'[Debug] Treating informations.')
-            result_list.append(treat_value(dic))
+
+            result_list.append(treat_value(transform_data_to_dictionary(monograph_data)))
         except:
             pass
 

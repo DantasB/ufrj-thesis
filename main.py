@@ -37,7 +37,6 @@ def access_collection():
 
     return (collection is not None, collection)
 
-
 if __name__ == "__main__":
     print(parse_pages())
     exit()

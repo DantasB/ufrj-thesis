@@ -23,7 +23,7 @@ def clean_names(text):
     Returns:
         str: treated text.
     """
-    return unidecode(string).replace(":","").upper().strip()
+    return unidecode(text).replace(":","").upper().strip()
 
 def treat_value(informations):
     """ Parses the informations value and key
@@ -35,12 +35,12 @@ def treat_value(informations):
         dict: treated informations
     """
     export = {}
-    for key in dic.keys():
+    for key in informations.keys():
         clean = re.compile(r",|\.|;|/(?!>)")
         if key == "endereco":
-            content = unidecode(dic[key].text).replace("\n","").strip()
+            content = unidecode(informations[key].text).replace("\n","").strip()
         else:
-            content = [unidecode(elem).upper().strip() for elem in re.sub(clean, "<br/>", dic[key].decode_contents()).split("<br/>")]
+            content = [unidecode(elem).upper().strip() for elem in re.sub(clean, "<br/>", informations[key].decode_contents()).split("<br/>")]
         export[key] = content if len(content) > 1 else content[0]
     
     return export

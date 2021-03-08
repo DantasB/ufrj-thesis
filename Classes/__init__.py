@@ -1,1 +1,1 @@
-__all__ = ['response_object', 'thesis_object']
+__all__ = ['thesis_object']

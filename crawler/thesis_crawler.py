@@ -24,7 +24,7 @@ def build_object(information, thesis_id):
         language    = information['IDIOMA']
         year        = int("".join(information['ANO']))
         
-        return Thesis(int(thesis_id), title, authors, advisors, url, keywords, university, institution, course, language, year)
+        return Thesis(thesis_id, title, authors, advisors, url, keywords, university, institution, course, language, year)
     
     except:
         raise
@@ -47,7 +47,7 @@ def get_monographs():
     return monographs
 
 
-def get_thesis_objects():
+def get_thesis_objects(THESIS_IDS):
     """ For each url, gets the information and treat it 
 
     Returns:
@@ -58,11 +58,14 @@ def get_thesis_objects():
     
     for url in monographs:
         try:
+            thesis_id = int(url[url.rfind("fcodigo=")+8:])
+            if thesis_id in THESIS_IDS:
+                continue
+            
             response = requests.get(url)
             soup = bs(response.text, "html.parser")
             monograph_data = [elem for elem in soup.find_all("td", {"valign":"top"})]
 
-            thesis_id = url[url.rfind("fcodigo=")+8:]
             result_list.append(build_object(treat_value(transform_data_to_dictionary(monograph_data)), thesis_id))
         except:
             raise

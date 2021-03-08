@@ -89,25 +89,16 @@ def delete_document_on_mongo(collection, query):
         return False
 
 def get_mongo_monographs_id(collection):
-    """ Access the database
+    """ Gets a list of existing ThesisId on Mongo
 
     Args:
-        connection (MongoClient): Mongo connection to the database
-        database_name (str): database to be accessed
+        collection (Collection): collection object to get the ThesisId
 
     Returns:
-        Database: the Database object
+        list: the list of ThesisId
     """
     try:
-        try:
-            with open('./thesis_id.txt', mode='r', encoding='utf-8') as f:
-                THESIS_IDS = f.splitlines()
-            return THESIS_IDS
-        except FileNotFoundError:
-            with open('./thesis_id.txt', mode='w', encoding='utf-8') as f:
-                THESIS_IDS = list(collection.distinct("ThesisId"))
-                f.writelines(THESIS_IDS)
-            return THESIS_IDS
+        return list(collection.distinct("ThesisId"))
     except:
         return None
 

@@ -1,7 +1,7 @@
 import os
 
 from Classes.thesis_object import Thesis
-from crawler.thesis_crawler import parse_pages
+from crawler.thesis_crawler import parse_pages, treat_value
 from SharedLibrary import mongo_utils
 from flask import jsonify
 from dotenv import load_dotenv, find_dotenv
@@ -38,7 +38,7 @@ def access_collection():
 
 
 if __name__ == "__main__":
-    print(parse_pages())
+    print(treat_value(parse_pages()))
     exit()
     no_error, collection = access_collection()
 

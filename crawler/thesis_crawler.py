@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup as bs
 from datetime import datetime as dt
+from unidecode import unidecode
+import re
 
 BASE_URL = "https://monografias.poli.ufrj.br/"
 CURSOS   = ["Engenharia Ambiental", "Engenharia Civil", "Engenharia-Básico", "Engenharia de Computação e Informação", "Engenharia de Controle e Automação", "Engenharia de Materiais", "Engenharia de Petróleo", "Engenharia de Produção", "Engenharia Eletrônica e de Computação", "Engenharia Elétrica", "Engenharia Mecânica", "Engenharia Metalúrgica", "Engenharia Naval e Oceânica", "Engenharia Nuclear"]
@@ -23,15 +25,27 @@ def get_monographs():
     
     return monographs
 
+def treat_value(dic):
+    export = {}
+    for key in dic.keys():
+        clean = re.compile(r",|\.|;|/(?!>)")
+        if key == "endereco":
+            content = unidecode(dic[key].text).replace("\n","").strip()
+        else:
+            content = [unidecode(elem).upper().strip() for elem in re.sub(clean, "<br/>", dic[key].decode_contents()).split("<br/>")]
+        export[key] = content if len(content) > 1 else content[0]
+    return export
+
 def parse_pages():
     monographs = get_monographs()
-    results_list = []
+
     for url in monographs:
         try:
             response = requests.get(url)
             soup = bs(response.text, "html.parser")
             monograph_data = [elem for elem in soup.find_all("td", {"valign":"top"})]
-            results_list.append(transform_data_to_dictionary(monograph_data))
-        except: 
-            pass
-    return results_list
+            dic = {}
+            for n in range(0,len(monograph_data),2):
+                dic[unidecode(monograph_data[n].text).replace(":","").lower().strip()] = monograph_data[n+1]
+        except: pass
+    return dic

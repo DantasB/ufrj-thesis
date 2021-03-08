@@ -1,6 +1,18 @@
 from unidecode import unidecode
 import re
 
+def get_string_numbers(information):
+    """gets the information digits
+
+    Args:
+        information (str): url with a number at the end.
+
+    Returns:
+        int: integers in the information string
+    """
+    result = re.findall('[0-9]+', information)
+    return int("".join(result))
+
 def remove_html_tags(text):
     """ Remove all html tags
     Args:
@@ -25,6 +37,24 @@ def clean_names(text):
     """
     return unidecode(text).replace(":","").upper().strip()
 
+def change_information_content(key, content):
+    """ Strip the information to get just the html content
+
+    Args:
+        key (str): dictionary key
+        content (str): content to be treated
+
+    Returns:
+        str: treated content
+    """
+    clean = re.compile(r",|\.|;|/(?!>)")
+    if key == "ENDERECO":
+        content = unidecode(content.text).replace("\n","").strip()
+    else:
+        content = [unidecode(elem).upper().strip() for elem in re.sub(clean, "<br/>", content.decode_contents()).split("<br/>")]
+    
+    return content
+
 def treat_value(informations):
     """ Parses the informations value and key
 
@@ -36,12 +66,7 @@ def treat_value(informations):
     """
     export = {}
     for key in informations.keys():
-        clean = re.compile(r",|\.|;|/(?!>)")
-        if key == "ENDERECO":
-            content = unidecode(informations[key].text).replace("\n","").strip()
-        else:
-            content = [unidecode(elem).upper().strip() for elem in re.sub(clean, "<br/>", informations[key].decode_contents()).split("<br/>")]
-        export[key] = content if len(content) > 1 else content[0]
+        export[key] = change_information_content(key, informations[key])
     
     return export
     

@@ -1,11 +1,35 @@
 import requests
 from bs4 import BeautifulSoup as bs
 from datetime import datetime as dt
-from SharedLibrary.parser_utils import transform_data_to_dictionary, treat_value
+from SharedLibrary.parser_utils import transform_data_to_dictionary, treat_value, get_string_numbers
+from Classes.thesis_object import Thesis
 
 BASE_URL = "https://monografias.poli.ufrj.br/"
 CURSOS   = ["Engenharia Ambiental", "Engenharia Civil", "Engenharia-Básico", "Engenharia de Computação e Informação", "Engenharia de Controle e Automação", "Engenharia de Materiais", "Engenharia de Petróleo", "Engenharia de Produção", "Engenharia Eletrônica e de Computação", "Engenharia Elétrica", "Engenharia Mecânica", "Engenharia Metalúrgica", "Engenharia Naval e Oceânica", "Engenharia Nuclear"]
-ANOS     = [ano for ano in range(2003,(dt.today().year)+1)]
+ANOS     = [ano for ano in range(1990,(dt.today().year)+1)]
+
+def build_object(information):
+    try:
+        thesis_id   = get_string_numbers(information['ENDERECO'])
+        title = "".join(information['TITULO'])
+
+        print(f'[Debug] Building the object of title {title}')
+
+        url         = information['ENDERECO']
+        authors     = information['AUTORES']
+        advisors    = information['ORIENTADORES']
+        keywords    = information['PALAVRAS-CHAVE']
+        university  = information['INSTITUICAO/CURSO'][0]
+        institution = information['INSTITUICAO/CURSO'][1]
+        course      = information['INSTITUICAO/CURSO'][2]
+        language    = information['IDIOMA']
+        year        = int("".join(information['ANO']))
+        
+        return Thesis(thesis_id, title, authors, advisors, url, keywords, university, institution, course, language, year)
+    
+    except:
+        raise
+
 
 def get_monographs():
     """Get all the monographs' URLs.
@@ -24,7 +48,7 @@ def get_monographs():
 
     return monographs
 
-def parse_pages():
+def get_thesis_objects():
     """ For each url, gets the information and treat it 
 
     Returns:
@@ -35,13 +59,11 @@ def parse_pages():
     
     for url in monographs:
         try:
-            print(f'[Debug] Accessing url: {url}.')
             response = requests.get(url)
             soup = bs(response.text, "html.parser")
             monograph_data = [elem for elem in soup.find_all("td", {"valign":"top"})]
 
-            print(f'[Debug] Treating informations.')
-            result_list.append(treat_value(transform_data_to_dictionary(monograph_data)))
+            result_list.append(build_object(treat_value(transform_data_to_dictionary(monograph_data))))
         except:
             raise
 

@@ -53,7 +53,7 @@ def insert_document_on_mongo(collection, document):
     """ Inserts a single document to the collection
 
     Args:
-        collection (Collection): collection object to inser the document
+        collection (Collection): collection object to insert the document
         document (Response): Response object to be saved on mongo
 
     Returns:
@@ -62,7 +62,7 @@ def insert_document_on_mongo(collection, document):
     print("[Debug] Inserting document on mongo")
     try:
         collection.insert_one(document)
-        print("[Debug] Document inserted")
+        print("[Debug] Document inserted on mongo")
         return True       
     except:
         print("[Warn] Couldn't insert the document")
@@ -73,7 +73,7 @@ def delete_document_on_mongo(collection, query):
     """ Deletes a single document to the collection
 
     Args:
-        collection (Collection): collection object to inser the document
+        collection (Collection): collection object to insert the document
         query (dictionary): Query used to find the object and delete it in the collection
 
     Returns:
@@ -87,3 +87,19 @@ def delete_document_on_mongo(collection, query):
     except:
         print("[Warn] Couldn't delete the document")
         return False
+
+def access_collection(parameters):
+    """ Access the mongo 
+    Args:
+        parameters (dictionary): dictionary object to with the env parameters
+    Returns:
+        tuple: the first element is a boolean (True if there's no error) and the second element is a collection object.
+    """
+    if (parameters is None):
+        return (False, None)
+
+    client     = connect_to_mongo(parameters["connection_url"], parameters["username"], parameters["password"], parameters["database"], parameters["port"])
+    db         = get_mongo_database(client, parameters["database"])   
+    collection = get_mongo_collection(db, parameters["collection"])
+
+    return (collection is not None, collection)

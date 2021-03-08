@@ -36,6 +36,7 @@ def parse_pages():
     
     for url in monographs:
         try:
+            print(f'[Debug] Accessing url: {url}. ')
             response = requests.get(url)
             soup = bs(response.text, "html.parser")
             monograph_data = [elem for elem in soup.find_all("td", {"valign":"top"})]
@@ -43,6 +44,7 @@ def parse_pages():
             for n in range(0,len(monograph_data),2):
                 dic[unidecode(monograph_data[n].text).replace(":","").lower().strip()] = monograph_data[n+1]         
             
+            print(f'[Debug] Treating informations.')
             result_list.append(treat_value(dic))
         except:
             pass

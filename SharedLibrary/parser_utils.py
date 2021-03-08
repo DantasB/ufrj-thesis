@@ -36,12 +36,15 @@ def treat_value(informations):
     """
     export = {}
     for key in dic.keys():
-        clean = re.compile(",|\.|;|\/")
-        content = [clean_names(remove_html_tags(elem)) for elem in re.sub(clean, "<br>", dic[key]).split("<br>")]
+        clean = re.compile(r",|\.|;|/(?!>)")
+        if key == "endereco":
+            content = unidecode(dic[key].text).replace("\n","").strip()
+        else:
+            content = [unidecode(elem).upper().strip() for elem in re.sub(clean, "<br/>", dic[key].decode_contents()).split("<br/>")]
         export[key] = content if len(content) > 1 else content[0]
     
     return export
-
+    
 def transform_data_to_dictionary(elements):
     """Parses each element in the list and parses it in a dictionary
 

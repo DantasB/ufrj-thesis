@@ -25,20 +25,15 @@ def get_monographs():
     
     return monographs
 
-def treat_value(dic):
-    export = {}
-    for key in dic.keys():
-        clean = re.compile(r",|\.|;|/(?!>)")
-        if key == "endereco":
-            content = unidecode(dic[key].text).replace("\n","").strip()
-        else:
-            content = [unidecode(elem).upper().strip() for elem in re.sub(clean, "<br/>", dic[key].decode_contents()).split("<br/>")]
-        export[key] = content if len(content) > 1 else content[0]
-    return export
-
 def parse_pages():
-    monographs = get_monographs()
+    """ For each url, gets the information and treat it 
 
+    Returns:
+        list: list of treated informations.
+    """
+    monographs  = get_monographs()    
+    result_list = []
+    
     for url in monographs:
         try:
             response = requests.get(url)
@@ -46,6 +41,10 @@ def parse_pages():
             monograph_data = [elem for elem in soup.find_all("td", {"valign":"top"})]
             dic = {}
             for n in range(0,len(monograph_data),2):
-                dic[unidecode(monograph_data[n].text).replace(":","").lower().strip()] = monograph_data[n+1]
-        except: pass
-    return dic
+                dic[unidecode(monograph_data[n].text).replace(":","").lower().strip()] = monograph_data[n+1]         
+            
+            result_list.append(treat_value(dic))
+        except:
+            pass
+
+    return result_list

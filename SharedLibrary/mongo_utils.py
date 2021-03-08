@@ -99,7 +99,15 @@ def get_mongo_monographs_id(collection):
         Database: the Database object
     """
     try:
-        return list(collection.distinct("ThesisId"))
+        try:
+            with open('./thesis_id.txt', mode='r', encoding='utf-8') as f:
+                THESIS_IDS = f.splitlines()
+            return THESIS_IDS
+        except FileNotFoundError:
+            with open('./thesis_id.txt', mode='w', encoding='utf-8') as f:
+                THESIS_IDS = list(collection.distinct("ThesisId"))
+                f.writelines(THESIS_IDS)
+            return THESIS_IDS
     except:
         return None
 

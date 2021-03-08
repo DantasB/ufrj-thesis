@@ -26,7 +26,7 @@ def clean_names(text):
     """
     return unidecode(text).replace(":","").replace("/","_").replace("-","_").upper().strip()
 
-def treat_value(informations, thesis_id):
+def treat_value(informations):
     """ Parses the informations value and key
 
     Args:
@@ -35,21 +35,18 @@ def treat_value(informations, thesis_id):
     Returns:
         dict: treated informations
     """
-    export = {
-        "THESIS_ID" : int(thesis_id)
-    }
     for key in informations.keys():
         clean = re.compile(r",|;|\.|/(?!>)")
         if key == "ENDERECO":
             content = unidecode(informations[key].text).replace("\n","").strip()
-            export[key] = content
+            informations[key] = content
         else:
             if key in ["AUTORES", "ORIENTADORES"]:
                 clean = re.compile(r",|;|/(?!>)")
             content = [remove_escaped_characters(unidecode(elem).upper().strip()) for elem in re.sub(clean, "<br/>", informations[key].decode_contents()).split("<br/>")]
-            export[key] = list(filter(lambda i: i != "", content)) if len(content) > 1 else content[0]
+            informations[key] = list(filter(lambda i: i != "", content))
     
-    return export
+    return informations
     
 def transform_data_to_dictionary(elements):
     """Parses each element in the list and parses it in a dictionary

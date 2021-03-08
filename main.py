@@ -7,7 +7,7 @@ from SharedLibrary.env_utils import load_parameters
 if __name__ == "__main__":
     no_error, collection = access_collection(load_parameters())
     if not no_error:
-        return None
+        exit()
     
     thesis_list = get_thesis_objects()
     if no_error:

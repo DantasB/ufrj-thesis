@@ -46,6 +46,7 @@ def get_monographs():
 
     return monographs
 
+
 def get_thesis_objects():
     """ For each url, gets the information and treat it 
 
@@ -60,8 +61,6 @@ def get_thesis_objects():
             response = requests.get(url)
             soup = bs(response.text, "html.parser")
             monograph_data = [elem for elem in soup.find_all("td", {"valign":"top"})]
-
-            print(f'[Debug] Treating informations.')
 
             thesis_id = url[url.rfind("fcodigo=")+8:]
             result_list.append(build_object(treat_value(transform_data_to_dictionary(monograph_data)), thesis_id))

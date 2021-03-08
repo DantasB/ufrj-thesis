@@ -2,10 +2,10 @@ import os
 
 from Classes.response_object import Response
 from Classes.thesis_object import Thesis
+from crawler.parse_pages import parse_pages, treat_value
 from SharedLibrary import mongo_utils
 from flask import jsonify
 from dotenv import load_dotenv, find_dotenv
-
 
 def load_parameters():
     """ Loads all .env parameters.
@@ -39,6 +39,8 @@ def access_collection():
 
 
 if __name__ == "__main__":
+    print(treat_value(parse_pages()))
+    exit()
     no_error, collection = access_collection()
 
     if no_error:

@@ -2,7 +2,7 @@ class Thesis():
     """ Used to define all the characteristics of a thesis.
 
     Args:
-        number_id (int): thesis identifier
+        thesis_id (int): thesis identifier
         title (str): thesis title
         authors (list): list of the authors who writed the thesis
         advisors (list): list of advisors who helped this theses

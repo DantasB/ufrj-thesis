@@ -1,30 +1,19 @@
 from unidecode import unidecode
 import re
 
-def get_string_numbers(information):
-    """gets the information digits
-
+def remove_escaped_characters(text):
+    """ Remove all escaped characters
     Args:
-        information (str): url with a number at the end.
-
+        text (string): the content that will have the escaped characters removed
     Returns:
-        int: integers in the information string
+        string: text without escaped characters
     """
-    result = re.findall('[0-9]+', information)
-    return int("".join(result))
-
-def remove_html_tags(text):
-    """ Remove all html tags
-    Args:
-        text (string): the content that will have the html tags removed
-    Returns:
-        string: text withouth html tags
-    """
-    if(text is None):
+    if (text is None):
         return
     
-    clean = re.compile('<.*?>')
-    return re.sub(clean, '', text)
+    # clean = re.compile(r'(\\(?:n|r|t|b|f))+')
+    # return re.sub(clean, ' ', r"{}".format(text))
+    return text.replace("\r\n", " ")
 
 def clean_names(text):
     """Treats the text.
@@ -35,27 +24,9 @@ def clean_names(text):
     Returns:
         str: treated text.
     """
-    return unidecode(text).replace(":","").upper().strip()
+    return unidecode(text).replace(":","").replace("/","_").replace("-","_").upper().strip()
 
-def change_information_content(key, content):
-    """ Strip the information to get just the html content
-
-    Args:
-        key (str): dictionary key
-        content (str): content to be treated
-
-    Returns:
-        str: treated content
-    """
-    clean = re.compile(r",|\.|;|/(?!>)")
-    if key == "ENDERECO":
-        content = unidecode(content.text).replace("\n","").strip()
-    else:
-        content = [unidecode(elem).upper().strip() for elem in re.sub(clean, "<br/>", content.decode_contents()).split("<br/>")]
-    
-    return content
-
-def treat_value(informations):
+def treat_value(informations, thesis_id):
     """ Parses the informations value and key
 
     Args:
@@ -64,9 +35,19 @@ def treat_value(informations):
     Returns:
         dict: treated informations
     """
-    export = {}
+    export = {
+        "THESIS_ID" : int(thesis_id)
+    }
     for key in informations.keys():
-        export[key] = change_information_content(key, informations[key])
+        clean = re.compile(r",|;|\.|/(?!>)")
+        if key == "ENDERECO":
+            content = unidecode(informations[key].text).replace("\n","").strip()
+            export[key] = content
+        else:
+            if key in ["AUTORES", "ORIENTADORES"]:
+                clean = re.compile(r",|;|/(?!>)")
+            content = [remove_escaped_characters(unidecode(elem).upper().strip()) for elem in re.sub(clean, "<br/>", informations[key].decode_contents()).split("<br/>")]
+            export[key] = list(filter(lambda i: i != "", content)) if len(content) > 1 else content[0]
     
     return export
     

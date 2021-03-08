@@ -88,6 +88,21 @@ def delete_document_on_mongo(collection, query):
         print("[Warn] Couldn't delete the document")
         return False
 
+def get_mongo_monographs_id(collection):
+    """ Access the database
+
+    Args:
+        connection (MongoClient): Mongo connection to the database
+        database_name (str): database to be accessed
+
+    Returns:
+        Database: the Database object
+    """
+    try:
+        return list(collection.distinct("ThesisId"))
+    except:
+        return None
+
 def access_collection(parameters):
     """ Access the mongo 
     Args:

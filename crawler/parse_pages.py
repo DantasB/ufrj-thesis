@@ -28,6 +28,7 @@ def treat_value(dic):
         export[key] = content if len(content) > 1 else content[0]
     return export
         
+        
 
 
 def parse_pages():

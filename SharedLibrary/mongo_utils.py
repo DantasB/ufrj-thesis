@@ -1,5 +1,6 @@
 import pymongo
 
+
 def connect_to_mongo(base_uri, user, password, database, port):
     """ Connect to mongo using the Atlas uri
 
@@ -14,10 +15,12 @@ def connect_to_mongo(base_uri, user, password, database, port):
         MongoClient: the client to be used in the database/collection access
     """
     try:
-        connection_string = base_uri.format(user=user, password=password, database=database)
+        connection_string = base_uri.format(
+            user=user, password=password, database=database)
         return pymongo.MongoClient(connection_string, port)
     except:
         return None
+
 
 def get_mongo_database(connection, database_name):
     """ Access the database
@@ -34,6 +37,7 @@ def get_mongo_database(connection, database_name):
     except:
         return None
 
+
 def get_mongo_collection(database, collection_name):
     """ Access the collection
 
@@ -49,6 +53,7 @@ def get_mongo_collection(database, collection_name):
     except:
         return None
 
+
 def insert_document_on_mongo(collection, document):
     """ Inserts a single document to the collection
 
@@ -63,11 +68,12 @@ def insert_document_on_mongo(collection, document):
     try:
         collection.insert_one(document)
         print("[Debug] Document inserted on mongo")
-        return True       
+        return True
     except:
         print("[Warn] Couldn't insert the document")
         raise
         return False
+
 
 def delete_document_on_mongo(collection, query):
     """ Deletes a single document to the collection
@@ -83,10 +89,11 @@ def delete_document_on_mongo(collection, query):
     try:
         collection.delete_one(query)
         print("[Debug] Document deleted")
-        return True       
+        return True
     except:
         print("[Warn] Couldn't delete the document")
         return False
+
 
 def get_mongo_monographs_id(collection):
     """ Gets a list of existing ThesisId on Mongo
@@ -102,6 +109,7 @@ def get_mongo_monographs_id(collection):
     except:
         return None
 
+
 def access_collection(parameters):
     """ Access the mongo 
     Args:
@@ -112,8 +120,9 @@ def access_collection(parameters):
     if (parameters is None):
         return (False, None)
 
-    client     = connect_to_mongo(parameters["connection_url"], parameters["username"], parameters["password"], parameters["database"], parameters["port"])
-    db         = get_mongo_database(client, parameters["database"])   
+    client = connect_to_mongo(parameters["connection_url"], parameters["username"],
+                              parameters["password"], parameters["database"], parameters["port"])
+    db = get_mongo_database(client, parameters["database"])
     collection = get_mongo_collection(db, parameters["collection"])
 
     return (collection is not None, collection)

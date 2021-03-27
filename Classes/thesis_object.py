@@ -14,19 +14,20 @@ class Thesis():
         language (str): language that the thesis got published.
         year (int): year that the thesis got published
     """
+
     def __init__(self, thesis_id, title, authors, advisors, url, keywords, university, institution, course, language, year):
-        self.thesis_id   = thesis_id
-        self.title       = title 
-        self.url         = url
-        self.authors     = authors
-        self.advisors    = advisors
-        self.keywords    = keywords
-        self.university  = university
+        self.thesis_id = thesis_id
+        self.title = title
+        self.url = url
+        self.authors = authors
+        self.advisors = advisors
+        self.keywords = keywords
+        self.university = university
         self.institution = institution
-        self.course      = course
-        self.language    = language
-        self.year        = year
-    
+        self.course = course
+        self.language = language
+        self.year = year
+
     def __eq__(self, thesis):
         if self.title == thesis.title:
             return True

@@ -2,7 +2,7 @@
 
 ![demonstration](https://cdn.discordapp.com/attachments/539836407628169237/825444971729256499/thesis.gif)
 
-## Tabela de conteúdos
+## Table of Contents
 
 <!--ts-->
    * [About](#about)
